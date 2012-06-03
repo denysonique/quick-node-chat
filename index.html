@@ -1,0 +1,51 @@
+<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'></script>
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+window.socket = io.connect('/');
+
+
+
+$(function() {
+  socket.on('client:message', function(msg) {
+      $('body').append('&lt;' + msg.from + '&gt; ');
+      $('body').append(msg.body);
+      $('body').append('<br>');
+  });
+
+  $('#send').on('submit', function(event) {
+    event.preventDefault();
+    msg = {};
+    msg.from = $('#nickname').val();
+    msg.body = $('#msgbody').val();
+    $('#msgbody').val('');
+    socket.emit('server:message', msg);
+  })
+
+})
+</script>
+
+<style>
+  #send {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    
+  }
+
+  #msgbody {
+    width: 80%;
+  }
+</style>
+
+
+
+
+<div id='messages'>
+</div>
+
+<form id='send' action='#'>
+  <input type='text' id='nickname' placeholder='nick'/>
+  <input type='text' id='msgbody'/>
+  <input type='submit' value='send'/>
+</form>
